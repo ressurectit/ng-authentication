@@ -15,7 +15,7 @@ export interface AuthenticationServiceOptions<TUserInfo>
      * @returns Observable
      */
     login(accessToken: AccessToken): Observable<any>;
-    
+
     /**
      * Gets indication whether current state of app is displaying auth page
      * @returns boolean
@@ -37,12 +37,12 @@ export interface AuthenticationServiceOptions<TUserInfo>
     /**
      * Redirects current page to authentication page
      */
-    showAuthPage(): Promise<boolean>;
+    showAuthPage(status?: number, statusText?: string, detail?: any): Promise<boolean>;
 
     /**
      * Redirects current page to access denied page
      */
-    showAccessDenied(): Promise<boolean>;
+    showAccessDenied(status?: number, statusText?: string, detail?: any): Promise<boolean>
 }
 
 /**

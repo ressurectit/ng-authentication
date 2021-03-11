@@ -226,17 +226,17 @@ export class AuthenticationService<TUserInfo = any>
     /**
      * Redirects current page to authentication page
      */
-    public showAuthPage(): Promise<boolean>
+    public showAuthPage(status?: number, statusText?: string, detail?: any): Promise<boolean>
     {
-        return this._options.showAuthPage();
+        return this._options.showAuthPage(status, statusText, detail);
     }
 
     /**
      * Redirects current page to access denied page
      */
-    public showAccessDenied(): Promise<boolean>
+    public showAccessDenied(status?: number, statusText?: string, detail?: any): Promise<boolean>
     {
-        return this._options.showAccessDenied();
+        return this._options.showAccessDenied(status, statusText, detail);
     }
 
     /**

@@ -72,7 +72,7 @@ export class AuthInterceptor implements HttpInterceptor
             return Observable.create((observer: Observer<any>) =>
             {
                 //client error, not response from server, or is ignored
-                if (err.error instanceof Error || 
+                if (err.error instanceof Error ||
                     (this._ignoredInterceptorsService && this._ignoredInterceptorsService.isIgnored(AuthInterceptor, req.additionalInfo)))
                 {
                     observer.error(err);
@@ -104,14 +104,15 @@ export class AuthInterceptor implements HttpInterceptor
                     }
 
                     //auth error from other pages
-                    this._authSvc.getUserIdentity(true)
+                    // use cached identity if exists
+                    this._authSvc.getUserIdentity(!this._options.useCachedUserIdentity)
                         .then(async ({isAuthenticated}) =>
                         {
                             //access denied user authenticated, not authorized
                             if((isAuthenticated && this._options.treatUnauthorizedAsForbidden) ||
                                (isAuthenticated && !this._options.treatUnauthorizedAsForbidden && err.status == 403))
                             {
-                                await this._authSvc.showAccessDenied();
+                                await this._authSvc.showAccessDenied(err.status, null, err);
 
                                 observer.complete();
 
@@ -119,7 +120,7 @@ export class AuthInterceptor implements HttpInterceptor
                             }
 
                             //show auth page, user not authenticated
-                            await this._authSvc.showAuthPage();
+                            await this._authSvc.showAuthPage(err.status, null, err);
 
                             observer.complete();
 

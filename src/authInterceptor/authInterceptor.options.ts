@@ -12,17 +12,30 @@ export class AuthInterceptorOptions
      */
     public treatUnauthorizedAsForbidden: boolean = false;
 
+    /**
+     * Indication whether after 401/403 authInterceptor can use cached user identity or make new call to server
+     */
+    public useCachedUserIdentity: boolean = false;
+
     //######################### constructor #########################
 
     /**
      * Creates instance of AuthInterceptorOptions
      * @param treatForbiddenAndUnauthorizedAsSame - Indication whether treat forbidden (403) and unauthorized (401) as same error
+     * @param useCachedUserIdentityAsSame - Indication whether after 401/403 authInterceptor can use cached user identity or make new call to server
      */
-    constructor(treatForbiddenAndUnauthorizedAsSame?: boolean)
+    constructor(
+        treatForbiddenAndUnauthorizedAsSame?: boolean,
+        useCachedUserIdentityAsSame?: boolean,
+        )
     {
         if(isPresent(treatForbiddenAndUnauthorizedAsSame))
         {
             this.treatUnauthorizedAsForbidden = treatForbiddenAndUnauthorizedAsSame;
+        }
+        if(isPresent(useCachedUserIdentityAsSame))
+        {
+            this.useCachedUserIdentity = useCachedUserIdentityAsSame;
         }
     }
 }

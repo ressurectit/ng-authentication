@@ -1,5 +1,25 @@
 # Changelog
 
+## Version 8.1.0 (2021-02-25)
+
+### Features
+
+- added new option `AuthInterceptorOptions.useCachedUserIdentity`
+    - Indication whether after 401/403 authInterceptor can use cached user identity or make new call to server
+- changed `AuthenticationServiceOptions.showAuthPage()`  and `AuthenticationServiceOptions.showAccessDenied()`
+    - new arguments
+        -  `status` - http error status
+        -  `statusText` - error mesage ( can be empty )
+        -  `detail` - error response ( can be emtpy or string or `HttpErrorResponse`)
+- changed `authInterceptor`
+    - now put `status` and `detail` about 401/403 HttpErrorResponse into methods `showAuthPage()` and `showAccessDenied()`
+- changed `auth.guard`
+    - now put `status == 451`, `statusText`, `detail: permission` into methods `showAuthPage()` and `showAccessDenied()`
+
+
+### BREAKING CHANGES
+- changed `AuthenticationServiceOptions.showAuthPage()`  and `AuthenticationServiceOptions.showAccessDenied()`
+
 ## Version 8.0.0 (2020-12-02)
 
 ### Features
