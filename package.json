@@ -1,5 +1,5 @@
 {
-    "name": "@anglr/authentication",
+    "name": "@arborai/authentication",
     "version": "0.0.0-placeholder",
     "description": "Angular module used for handling authentication",
     "module": "./dist/es5/authentication.js",

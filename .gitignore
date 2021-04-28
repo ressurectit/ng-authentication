@@ -15,3 +15,8 @@ tsdoc-metadata.json
 *.orig
 *.map
 *~
+
+# vim
+*.swp
+*.swo
+

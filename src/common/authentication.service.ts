@@ -102,6 +102,26 @@ export class AuthenticationService<TUserInfo = any>
         return false;
     }
 
+    public authorized(permission: string): Promise<void>
+    {
+        return this.isAuthorized(permission)
+            .then(a => new Promise<void>((resolve, reject) => {
+                        if (a) resolve()
+                        else reject()
+                    })
+        )
+    }
+
+    public unauthorized(permission: string): Promise<void>
+    {
+        return this.isAuthorized(permission)
+            .then(a => new Promise<void>((resolve, reject) => {
+                        if (a) reject()
+                        else resolve()
+                    })
+        )
+    }
+
     /**
      * Tests whether is used authorized for specified permission
      * @param permission - Permission name that is tested
@@ -226,17 +246,17 @@ export class AuthenticationService<TUserInfo = any>
     /**
      * Redirects current page to authentication page
      */
-    public showAuthPage(): Promise<boolean>
+    public showAuthPage(status?: number, statusText?: string, detail?: any): Promise<boolean>
     {
-        return this._options.showAuthPage();
+        return this._options.showAuthPage(status, statusText, detail);
     }
 
     /**
      * Redirects current page to access denied page
      */
-    public showAccessDenied(): Promise<boolean>
+    public showAccessDenied(status?: number, statusText?: string, detail?: any): Promise<boolean>
     {
-        return this._options.showAccessDenied();
+        return this._options.showAccessDenied(status, statusText, detail);
     }
 
     /**

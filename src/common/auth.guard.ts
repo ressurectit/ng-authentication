@@ -38,7 +38,7 @@ export class AuthGuard implements CanActivate
                     console.error("Unexpected error in AuthGuard!");
                     observer.next(false);
                     observer.complete();
-                        
+
                     return;
                 })
                 .then(userData =>
@@ -47,18 +47,18 @@ export class AuthGuard implements CanActivate
                     {
                         if(userData.permissions.indexOf(permission) < 0 && userData.isAuthenticated)
                         {
-                            this.authService.showAccessDenied();
+                            this.authService.showAccessDenied(451, `Permission ${permission} is required`, permission);
                             observer.next(false);
                             observer.complete();
-                        
+
                             return;
                         }
                         else if(userData.permissions.indexOf(permission) < 0 && !userData.isAuthenticated && !this.authService.isAuthPage())
                         {
-                            this.authService.showAuthPage();
+                            this.authService.showAuthPage(451, `Authentication and permission ${permission} is required`, permission);
                             observer.next(false);
                             observer.complete();
-                            
+
                             return;
                         }
 
