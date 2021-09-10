@@ -161,7 +161,6 @@ export class AuthenticationService<TUserInfo = any>
                           reject(error);
                           this._isInitializedResolver(true);
 
-
                           return EMPTY;
                       }))
                 .subscribe((itm: UserIdentity<TUserInfo>) =>
@@ -181,21 +180,23 @@ export class AuthenticationService<TUserInfo = any>
      * @param accessToken - Access token holding authentication information
      * @returns Observable
      */
-    public login(accessToken: AccessToken): Observable<any>
+    public login(accessToken: AccessToken): Observable<UserIdentity>
     {
-        return Observable.create((observer: Observer<any>) =>
+        return new Observable((observer: Observer<any>) =>
         {
             this._options.login(accessToken)
                 .subscribe(() =>
                 {
                     this.getUserIdentity(true)
-                        .then(() =>
+                        .then(identity =>
                         {
-                            observer.next(null);
+                            observer.next(identity);
+                            observer.complete();
                         });
                 }, error =>
                 {
                     observer.error(error);
+                    observer.complete();
                 });
         });
     }
@@ -206,7 +207,7 @@ export class AuthenticationService<TUserInfo = any>
      */
     public logout(): Observable<any>
     {
-        return Observable.create((observer: Observer<any>) =>
+        return new Observable((observer: Observer<any>) =>
         {
             this._options.logout()
                 .subscribe(() =>
@@ -215,10 +216,12 @@ export class AuthenticationService<TUserInfo = any>
                         .then(() =>
                         {
                             observer.next(null);
+                            observer.complete();
                         });
                 }, error =>
                 {
                     observer.error(error);
+                    observer.complete();
                 });
         });
     }

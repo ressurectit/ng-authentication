@@ -1,6 +1,10 @@
 # Changelog
 
-## Version 8.0.0 (2020-12-02)
+## Version 8.0.0 (2021-09-10)
+
+### Bugfixes
+- `AuthenticationService` `login` method now returns `UserIdentity` instead of any
+- fixed `AuthenticationService` `login`, `logout` methods, now complete observables (could not be used with `toPromise` before)
 
 ### Features
 
