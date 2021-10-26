@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 8.0.0 (2021-09-10)
+## Version 8.0.0 (2021-10-26)
 
 ### Bugfixes
 - `AuthenticationService` `login` method now returns `UserIdentity` instead of any

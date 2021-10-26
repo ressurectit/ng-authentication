@@ -42,7 +42,7 @@ export class AuthorizeDirective implements OnInit, OnDestroy
     /**
      * Additional condition that is added to evaluation of permission
      */
-    @Input("authorizeAddContition")
+    @Input("authorizeAddCondition")
     public addCondition: boolean = true;
     
     //######################### constructor #########################
