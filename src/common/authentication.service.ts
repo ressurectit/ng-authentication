@@ -21,7 +21,7 @@ export function authenticationServiceFactory(options: AuthenticationServiceOptio
        isBlank(options.showAccessDenied) || !isFunction(options.showAccessDenied) ||
        isBlank(options.showAuthPage) || !isFunction(options.showAuthPage))
     {
-        throw new Error("Options must be set and must implement AuthenticationServiceOptions");
+        throw new Error('Options must be set and must implement AuthenticationServiceOptions');
     }
 
     return new AuthenticationService(options);

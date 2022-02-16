@@ -26,8 +26,8 @@ export class AuthGuard implements CanActivate
      */
     canActivate(next: ActivatedRouteSnapshot) : Observable<boolean>
     {
-        let component: AuthorizationDecoratedComponent = <any>next.component;
-        let permission: string = component.permissionName;
+        const component: AuthorizationDecoratedComponent = <any>next.component;
+        const permission: string = component.permissionName;
 
         return Observable.create((observer: Observer<boolean>) =>
         {
@@ -35,7 +35,7 @@ export class AuthGuard implements CanActivate
                 .getUserIdentity()
                 .catch(() =>
                 {
-                    console.error("Unexpected error in AuthGuard!");
+                    console.error('Unexpected error in AuthGuard!');
                     observer.next(false);
                     observer.complete();
                         
@@ -68,7 +68,7 @@ export class AuthGuard implements CanActivate
                         return;
                     }
 
-                    console.warn("No UserData in AuthGuard!");
+                    console.warn('No UserData in AuthGuard!');
                     observer.next(false);
                     observer.complete();
                 });

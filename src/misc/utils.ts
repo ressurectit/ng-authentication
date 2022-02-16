@@ -38,7 +38,7 @@ export function evaluatePermissions(permissions: string[],
     //Multiple conditions
     if(Array.isArray(condition))
     {
-        let arrayPermission: string[] = condition;
+        const arrayPermission: string[] = condition;
 
         if(andCondition)
         {
@@ -65,8 +65,8 @@ export function evaluatePermissions(permissions: string[],
         {
             //TODO - think of some optimization for performance reasons
             let cond: string = condition;
-            cond.replace(/!?(.*?)(?:&+|\|+|\(|\)|$)/g, "$1")
-                .split(" ")
+            cond.replace(/!?(.*?)(?:&+|\|+|\(|\)|$)/g, '$1')
+                .split(' ')
                 .filter(itm => itm.trim())
                 .forEach(permissionName => cond = cond.replace(new RegExp(permissionName, 'g'), (permissions.indexOf(permissionName) > -1).toString()));
 
@@ -78,7 +78,7 @@ export function evaluatePermissions(permissions: string[],
         //Permission name string
         else
         {
-            let stringPermission: string = <string>condition;
+            const stringPermission: string = <string>condition;
 
             if(permissions.indexOf(stringPermission) > -1)
             {

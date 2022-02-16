@@ -1,2 +1,2 @@
-export {TestingModule} from "./modules/testing.module";
-export {FakeAuthorizeDirective} from "./common/fakeAuthorize.directive";
+export {TestingModule} from './modules/testing.module';
+export {FakeAuthorizeDirective} from './common/fakeAuthorize.directive';

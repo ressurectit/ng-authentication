@@ -18,7 +18,7 @@ export function Authorize(permission: string)
 {
     return function <TFunction extends Function> (target: TFunction): TFunction
     {
-        let typedTarget: AuthorizationDecoratedComponent = target as any;
+        const typedTarget: AuthorizationDecoratedComponent = target as any;
         typedTarget.permissionName = permission;
 
         return target;

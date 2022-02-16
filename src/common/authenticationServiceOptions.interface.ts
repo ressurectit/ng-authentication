@@ -48,4 +48,4 @@ export interface AuthenticationServiceOptions<TUserInfo>
 /**
  * Authentication options token used for injecting into authentication service
  */
-export const AUTHENTICATION_SERVICE_OPTIONS: InjectionToken<AuthenticationServiceOptions<any>> = new InjectionToken<AuthenticationServiceOptions<any>>("AuthenticationServiceOptions");
+export const AUTHENTICATION_SERVICE_OPTIONS: InjectionToken<AuthenticationServiceOptions<any>> = new InjectionToken<AuthenticationServiceOptions<any>>('AuthenticationServiceOptions');

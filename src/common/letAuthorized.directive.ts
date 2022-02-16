@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Directive, Input, OnChanges, OnDestroy, OnInit, Optional, SimpleChanges, TemplateRef, ViewContainerRef} from "@angular/core";
+import {ChangeDetectorRef, Directive, Input, OnChanges, OnDestroy, OnInit, Optional, SimpleChanges, TemplateRef, ViewContainerRef} from '@angular/core';
 import {nameof} from '@jscrpt/common';
 import {Subscription} from 'rxjs';
 
@@ -20,7 +20,7 @@ export interface LetAuthorizedContext
  */
 @Directive(
 {
-    selector: "[letAuthorized]",
+    selector: '[letAuthorized]',
     exportAs: 'authorized'
 })
 export class LetAuthorizedDirective implements OnInit, OnChanges, OnDestroy
@@ -58,19 +58,19 @@ export class LetAuthorizedDirective implements OnInit, OnChanges, OnDestroy
     /**
      * Indication that AND condition should be used instead of OR condition if multiple permissions are provided
      */
-    @Input("letAuthorizedAndCondition")
+    @Input('letAuthorizedAndCondition')
     public andCondition: boolean = false;
 
     /**
      * Indication that provided string is set of loggical operations among permission names, if this is true andCondition is ignored
      */
-    @Input("letAuthorizedConditionString")
+    @Input('letAuthorizedConditionString')
     public conditionString: boolean = false;
 
     /**
      * Additional condition that is added to evaluation of permission
      */
-    @Input("letAuthorizedAddContition")
+    @Input('letAuthorizedAddContition')
     public addCondition: boolean = true;
 
     //######################### constructor #########################

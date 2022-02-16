@@ -5,7 +5,7 @@ import {Input, Directive, TemplateRef, ViewContainerRef} from '@angular/core';
  */
 @Directive(
 {
-    selector: "[authorize]"
+    selector: '[authorize]'
 })
 export class FakeAuthorizeDirective
 {
@@ -14,19 +14,19 @@ export class FakeAuthorizeDirective
     /**
      * Name of permission that is requested for displaying element
      */
-    @Input("authorize")
+    @Input('authorize')
     public permission: string | string[];
 
     /**
      * Indication that AND condition should be used instead of OR condition if multiple permissions are provided
      */
-    @Input("authorizeAndCondition")
+    @Input('authorizeAndCondition')
     public andCondition: boolean = false;
 
     /**
      * Indication that provided string is set of loggical operations among permission names, if this is true andCondition is ignored
      */
-    @Input("authorizeConditionString")
+    @Input('authorizeConditionString')
     public conditionString: boolean = false;
 
     //######################### constructor #########################

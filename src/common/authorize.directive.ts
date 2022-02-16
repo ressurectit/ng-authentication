@@ -8,7 +8,7 @@ import {UserIdentity} from './userIdentity';
 
 @Directive(
 {
-    selector: "[authorize]"
+    selector: '[authorize]'
 })
 export class AuthorizeDirective implements OnInit, OnDestroy
 {
@@ -24,25 +24,25 @@ export class AuthorizeDirective implements OnInit, OnDestroy
     /**
      * Name of permission that is requested for displaying element
      */
-    @Input("authorize")
+    @Input('authorize')
     public permission: string | string[];
 
     /**
      * Indication that AND condition should be used instead of OR condition if multiple permissions are provided
      */
-    @Input("authorizeAndCondition")
+    @Input('authorizeAndCondition')
     public andCondition: boolean = false;
 
     /**
      * Indication that provided string is set of loggical operations among permission names, if this is true andCondition is ignored
      */
-    @Input("authorizeConditionString")
+    @Input('authorizeConditionString')
     public conditionString: boolean = false;
 
     /**
      * Additional condition that is added to evaluation of permission
      */
-    @Input("authorizeAddCondition")
+    @Input('authorizeAddCondition')
     public addCondition: boolean = true;
     
     //######################### constructor #########################
@@ -62,22 +62,22 @@ export class AuthorizeDirective implements OnInit, OnDestroy
     {
         if(isBlank(this.permission))
         {
-            throw new Error("You must specify 'authorize' attribute value.");
+            throw new Error('You must specify \'authorize\' attribute value.');
         }
 
         if(!isBoolean(this.andCondition))
         {
-            throw new Error("Parameter 'andCondition' must be boolean value!");
+            throw new Error('Parameter \'andCondition\' must be boolean value!');
         }
 
         if(!isBoolean(this.conditionString))
         {
-            throw new Error("Parameter 'conditionString' must be boolean value!");
+            throw new Error('Parameter \'conditionString\' must be boolean value!');
         }
 
-        if(isString(this.permission) && this.permission.indexOf(",") > -1)
+        if(isString(this.permission) && this.permission.indexOf(',') > -1)
         {
-            this.permission = this.permission.split(",").map(itm => itm.trim());
+            this.permission = this.permission.split(',').map(itm => itm.trim());
         }
 
         //synchronous render if permission is present
@@ -115,7 +115,7 @@ export class AuthorizeDirective implements OnInit, OnDestroy
     {
         if(!isString(this.permission) && !Array.isArray(this.permission))
         {
-            throw new Error("Invalid argument type! Permission must be string or array of strings.");
+            throw new Error('Invalid argument type! Permission must be string or array of strings.');
         }
 
         if(userIdentity)

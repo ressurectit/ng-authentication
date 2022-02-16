@@ -13,17 +13,17 @@ export class UserIdentity<TUserInfo = any>
     /**
      * Name of authenticated user
      */
-    public userName: string = "";
+    public userName: string = '';
     
     /**
      * First name of logged user
      */
-    public firstName: string = "";
+    public firstName: string = '';
     
     /**
      * Surname of logged user
      */
-    public surname: string = "";
+    public surname: string = '';
     
     /**
      * Array of user permissions
