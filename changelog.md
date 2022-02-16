@@ -1,5 +1,31 @@
 # Changelog
 
+## Version 9.0.0 (2022-02-16)
+
+### Features
+
+- `AuthenticationServiceOptions` generic type has default `any` now
+
+### BREAKING CHANGES
+
+- minimal supported version of *Angular* is `13.1.0`
+- minimal supported version of `@jscrpt/common` is `2.2.0`
+- minimal supported version of `@anglr/common` is `10.0.0`
+- compiled as *Angular IVY* **only** with new *APF*
+- removed support of *es5* target and using latest package.json features
+- added strict null checks
+- dropped support of `Node.js <= 12.20`
+- changed signature of constructor of `AuthInterceptor`
+- `AccessToken` now has constructor with initializators
+- `AuthenticationServiceOptions` interface
+    - now changed to class instead of interface
+    - `login`, `logout` methods now returns `Observable<void>`
+- `AuthenticationService` class
+    - `userIdentity` fixed typings, now is correctly nullable
+- `AUTHENTICATION_SERVICE_OPTIONS` removed, now should be used `AuthenticationServiceOptions` directly
+- `UserIdentity` class
+    - `additionalInfo` fixed typings, now is correctly nullable
+
 ## Version 8.0.1 (2022-02-16)
 
 ### Bugfixes

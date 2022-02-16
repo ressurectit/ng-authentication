@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Directive, Input, OnChanges, OnDestroy, OnInit, Optional, SimpleChanges, TemplateRef, ViewContainerRef} from '@angular/core';
-import {nameof} from '@jscrpt/common';
+import {isBlank, nameof} from '@jscrpt/common';
 import {Subscription} from 'rxjs';
 
 import {evaluatePermissions} from '../misc/utils';
@@ -53,7 +53,7 @@ export class LetAuthorizedDirective implements OnInit, OnChanges, OnDestroy
      * Condition that should be evaluated and used for obtaining authorized result
      */
     @Input('letAuthorized')
-    public condition: string | string[];
+    public condition: string | string[] = null!;
 
     /**
      * Indication that AND condition should be used instead of OR condition if multiple permissions are provided
@@ -86,8 +86,13 @@ export class LetAuthorizedDirective implements OnInit, OnChanges, OnDestroy
     /**
      * Initialize component
      */
-    public ngOnInit()
+    public ngOnInit(): void
     {
+        if(isBlank(this.condition))
+        {
+            throw new Error('You must specify \'authorize\' attribute value.');
+        }
+
         this._subscription = this._authSvc
             .authenticationChanged
             .subscribe(userIdentity =>
@@ -116,7 +121,7 @@ export class LetAuthorizedDirective implements OnInit, OnChanges, OnDestroy
     /**
      * Called when component is destroyed
      */
-    public ngOnDestroy()
+    public ngOnDestroy(): void
     {
         this._subscription?.unsubscribe();
         this._subscription = null;
@@ -128,7 +133,7 @@ export class LetAuthorizedDirective implements OnInit, OnChanges, OnDestroy
      * Process authorization
      * @param userIdentity - Current user identity instance
      */
-    protected _processAuthorization(userIdentity: UserIdentity)
+    protected _processAuthorization(userIdentity: UserIdentity|null): void
     {
         this._evaluateAuthorization(userIdentity);
 
@@ -148,8 +153,15 @@ export class LetAuthorizedDirective implements OnInit, OnChanges, OnDestroy
      * Evaluates authorization condition
      * @param userIdentity - Current user identity instance
      */
-    protected _evaluateAuthorization(userIdentity: UserIdentity)
+    protected _evaluateAuthorization(userIdentity: UserIdentity|null): void
     {
+        if(!userIdentity)
+        {
+            this._value = false;
+
+            return;
+        }
+
         this._value = evaluatePermissions(userIdentity.permissions,
                                           this.condition,
                                           this.andCondition,

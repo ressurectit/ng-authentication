@@ -1,11 +1,14 @@
 import {Directive, TemplateRef, ViewContainerRef, OnInit, Input, OnDestroy, ChangeDetectorRef} from '@angular/core';
 import {isString, isBoolean, isBlank} from '@jscrpt/common';
 import {Subscription} from 'rxjs';
-import {evaluatePermissions} from '../misc/utils';
 
+import {evaluatePermissions} from '../misc/utils';
 import {AuthenticationService} from './authentication.service';
 import {UserIdentity} from './userIdentity';
 
+/**
+ * Directive that displays element if use is authorized
+ */
 @Directive(
 {
     selector: '[authorize]'
@@ -25,7 +28,7 @@ export class AuthorizeDirective implements OnInit, OnDestroy
      * Name of permission that is requested for displaying element
      */
     @Input('authorize')
-    public permission: string | string[];
+    public permission: string | string[] = null!;
 
     /**
      * Indication that AND condition should be used instead of OR condition if multiple permissions are provided
@@ -46,7 +49,7 @@ export class AuthorizeDirective implements OnInit, OnDestroy
     public addCondition: boolean = true;
     
     //######################### constructor #########################
-    constructor(private _template: TemplateRef<any>,
+    constructor(private _template: TemplateRef<unknown>,
                 private _viewContainer: ViewContainerRef,
                 private _authService: AuthenticationService,
                 private _changeDetector: ChangeDetectorRef)
@@ -58,7 +61,7 @@ export class AuthorizeDirective implements OnInit, OnDestroy
     /**
      * Initialize component
      */
-    public ngOnInit()
+    public ngOnInit(): void
     {
         if(isBlank(this.permission))
         {
@@ -97,7 +100,7 @@ export class AuthorizeDirective implements OnInit, OnDestroy
     /**
      * Called when component is destroyed
      */
-    public ngOnDestroy()
+    public ngOnDestroy(): void
     {
         if(this._subscription)
         {
@@ -111,7 +114,7 @@ export class AuthorizeDirective implements OnInit, OnDestroy
     /**
      * Renders content if user has permissions
      */
-    private _renderIfPermission(userIdentity: UserIdentity)
+    private _renderIfPermission(userIdentity: UserIdentity|null)
     {
         if(!isString(this.permission) && !Array.isArray(this.permission))
         {

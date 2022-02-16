@@ -1,4 +1,3 @@
-import {InjectionToken} from '@angular/core';
 import {Observable} from 'rxjs';
 
 import {UserIdentity} from './userIdentity';
@@ -7,45 +6,38 @@ import {AccessToken} from './accessToken';
 /**
  * Options for authentication service
  */
-export interface AuthenticationServiceOptions<TUserInfo>
+export abstract class AuthenticationServiceOptions<TUserInfo = any>
 {
+    //######################### public methods #########################
+
     /**
      * Method logs user into system
      * @param accessToken - Access token holding authentication information
-     * @returns Observable
      */
-    login(accessToken: AccessToken): Observable<any>;
+    public abstract login(accessToken: AccessToken): Observable<void>;
     
     /**
      * Gets indication whether current state of app is displaying auth page
-     * @returns boolean
      */
-    isAuthPage(): boolean;
+    public abstract isAuthPage(): boolean;
 
     /**
      * Methods logs out user out of system
-     * @returns Observable
      */
-    logout(): Observable<any>;
+    public abstract logout(): Observable<void>;
 
     /**
      * Gets information about user
-     * @returns Observable
      */
-    getUserIdentity(): Observable<UserIdentity<TUserInfo>>;
+    public abstract getUserIdentity(): Observable<UserIdentity<TUserInfo>>;
 
     /**
      * Redirects current page to authentication page
      */
-    showAuthPage(): Promise<boolean>;
+    public abstract showAuthPage(): Promise<boolean>;
 
     /**
      * Redirects current page to access denied page
      */
-    showAccessDenied(): Promise<boolean>;
+    public abstract showAccessDenied(): Promise<boolean>;
 }
-
-/**
- * Authentication options token used for injecting into authentication service
- */
-export const AUTHENTICATION_SERVICE_OPTIONS: InjectionToken<AuthenticationServiceOptions<any>> = new InjectionToken<AuthenticationServiceOptions<any>>('AuthenticationServiceOptions');

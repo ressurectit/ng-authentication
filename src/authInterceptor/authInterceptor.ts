@@ -1,8 +1,8 @@
-import {FactoryProvider, Injector} from '@angular/core';
+import {ClassProvider, Injectable, Optional} from '@angular/core';
 import {HttpInterceptor, HTTP_INTERCEPTORS, HttpEvent, HttpHandler, HttpRequest} from '@angular/common/http';
-import {IgnoredInterceptorsService, AdditionalInfo, IgnoredInterceptorId} from '@anglr/common';
+import {IGNORED_INTERCEPTORS} from '@anglr/common';
 import {isBlank} from '@jscrpt/common';
-import {Observable, ObservableInput, Observer} from 'rxjs';
+import {Observable, ObservableInput} from 'rxjs';
 import {catchError, tap} from 'rxjs/operators';
 
 import {AuthInterceptorOptions} from './authInterceptor.options';
@@ -11,6 +11,7 @@ import {AuthenticationService} from '../common/authentication.service';
 /**
  * AuthInterceptor used for intercepting http responses and handling 401, 403 statuses
  */
+@Injectable()
 export class AuthInterceptor implements HttpInterceptor
 {
     //######################### private fields #########################
@@ -46,9 +47,8 @@ export class AuthInterceptor implements HttpInterceptor
     }
 
     //######################### constructors #########################
-    constructor(private _authSvc: AuthenticationService<any>,
-                private _ignoredInterceptorsService: IgnoredInterceptorsService,
-                private _options: AuthInterceptorOptions)
+    constructor(private _authSvc: AuthenticationService,
+                @Optional() private _options: AuthInterceptorOptions)
     {
         if(isBlank(_options) || !(_options instanceof AuthInterceptorOptions))
         {
@@ -63,17 +63,17 @@ export class AuthInterceptor implements HttpInterceptor
      * @param req - Request to be intercepted
      * @param next - Next middleware that can be called for next processing
      */
-    public intercept(req: HttpRequest<any> & AdditionalInfo<IgnoredInterceptorId>, next: HttpHandler): Observable<HttpEvent<any>>
+    public intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>>
     {
         this.requestsInProgress++;
 
         return next.handle(req).pipe(catchError((err) =>
         {
-            return Observable.create((observer: Observer<any>) =>
+            return new Observable(observer =>
             {
                 //client error, not response from server, or is ignored
                 if (err.error instanceof Error || 
-                    (this._ignoredInterceptorsService && this._ignoredInterceptorsService.isIgnored(AuthInterceptor, req.additionalInfo)))
+                    req.context.get(IGNORED_INTERCEPTORS).some(itm => itm == AuthInterceptor))
                 {
                     observer.error(err);
                     observer.complete();
@@ -133,28 +133,18 @@ export class AuthInterceptor implements HttpInterceptor
                 //other errors
                 observer.error(err);
                 observer.complete();
-            }) as ObservableInput<HttpEvent<any>>;
+            }) as ObservableInput<HttpEvent<unknown>>;
         }),
         tap(() => this.requestsInProgress--, () => this.requestsInProgress--));
     }
 }
 
 /**
- * Factory used for creating auth interceptor
- * @param injector - Injector used for obtaining dependencies
- */
-export function authInterceptorProviderFactory(injector: Injector)
-{
-    return new AuthInterceptor(injector.get(AuthenticationService), injector.get(IgnoredInterceptorsService), injector.get(AuthInterceptorOptions, null));
-};
-
-/**
  * Provider for proper use of AuthInterceptor, use this provider to inject this interceptor
  */
-export const AUTH_INTERCEPTOR_PROVIDER: FactoryProvider =
+export const AUTH_INTERCEPTOR_PROVIDER: ClassProvider =
 {
     provide: HTTP_INTERCEPTORS,
     multi: true,
-    useFactory: authInterceptorProviderFactory,
-    deps: [Injector]
+    useClass: AuthInterceptor
 };

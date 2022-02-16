@@ -33,5 +33,5 @@ export class UserIdentity<TUserInfo = any>
     /**
      * Additional information carried with user identity
      */
-    public additionalInfo: TUserInfo;
+    public additionalInfo: TUserInfo|null = null;
 }

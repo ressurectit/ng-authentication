@@ -1,4 +1,4 @@
-export {AuthenticationServiceOptions, AUTHENTICATION_SERVICE_OPTIONS} from './common/authenticationServiceOptions.interface';
+export {AuthenticationServiceOptions} from './common/authenticationServiceOptions.interface';
 export {UserIdentity} from './common/userIdentity';
 export {AuthenticationService} from './common/authentication.service';
 export {AuthGuard} from './common/auth.guard';

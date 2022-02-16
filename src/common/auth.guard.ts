@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {CanActivate, ActivatedRouteSnapshot} from '@angular/router';
-import {Observable, Observer} from 'rxjs';
+import {Observable} from 'rxjs';
 
 import {AuthenticationService} from './authentication.service';
 import {AuthorizationDecoratedComponent} from './authorize.decorator';
@@ -12,7 +12,7 @@ import {AuthorizationDecoratedComponent} from './authorize.decorator';
 export class AuthGuard implements CanActivate
 {
     //######################### constructor #########################
-    constructor(private authService: AuthenticationService<any>)
+    constructor(private authService: AuthenticationService)
     {
     }
 
@@ -26,10 +26,10 @@ export class AuthGuard implements CanActivate
      */
     canActivate(next: ActivatedRouteSnapshot) : Observable<boolean>
     {
-        const component: AuthorizationDecoratedComponent = <any>next.component;
+        const component = next.component as unknown as AuthorizationDecoratedComponent;
         const permission: string = component.permissionName;
 
-        return Observable.create((observer: Observer<boolean>) =>
+        return new Observable(observer =>
         {
             this.authService
                 .getUserIdentity()

@@ -1,36 +1,16 @@
-import {Injectable, Inject, Injector} from '@angular/core';
-import {isFunction, isArray, isBlank} from '@jscrpt/common';
+import {Injectable} from '@angular/core';
+import {isArray} from '@jscrpt/common';
 import {Observable, Observer, Subject, EMPTY} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 
 import {UserIdentity} from './userIdentity';
-import {AuthenticationServiceOptions, AUTHENTICATION_SERVICE_OPTIONS} from './authenticationServiceOptions.interface';
+import {AuthenticationServiceOptions} from './authenticationServiceOptions.interface';
 import {AccessToken} from './accessToken';
-
-/**
- * Factory used for creating AuthenticationService
- * @param options - Options passed to created service
- */
-export function authenticationServiceFactory(options: AuthenticationServiceOptions<any>)
-{
-    if(isBlank(options) ||
-       isBlank(options.getUserIdentity) || !isFunction(options.getUserIdentity) ||
-       isBlank(options.login) || !isFunction(options.login) ||
-       isBlank(options.logout) || !isFunction(options.logout) ||
-       isBlank(options.isAuthPage) || !isFunction(options.isAuthPage) ||
-       isBlank(options.showAccessDenied) || !isFunction(options.showAccessDenied) ||
-       isBlank(options.showAuthPage) || !isFunction(options.showAuthPage))
-    {
-        throw new Error('Options must be set and must implement AuthenticationServiceOptions');
-    }
-
-    return new AuthenticationService(options);
-}
 
 /**
  * Authentication service managing authentication
  */
-@Injectable({providedIn: 'root', deps: [AUTHENTICATION_SERVICE_OPTIONS], useFactory: authenticationServiceFactory})
+@Injectable({providedIn: 'root'})
 export class AuthenticationService<TUserInfo = any>
 {
     //######################### private fields #########################
@@ -38,12 +18,12 @@ export class AuthenticationService<TUserInfo = any>
     /**
      * Authentication promise that was used for authentication
      */
-    private _authenticationPromise: Promise<UserIdentity<TUserInfo>>|null;
+    private _authenticationPromise: Promise<UserIdentity<TUserInfo>>|null = null;
 
     /**
      * Resolved function for isInitialized
      */
-    private _isInitializedResolver: (indication: boolean) => void;
+    private _isInitializedResolver: (indication: boolean) => void = () => {};
 
     /**
      * Subject used for indicating authenticationChanged
@@ -53,7 +33,7 @@ export class AuthenticationService<TUserInfo = any>
     /**
      * Last value of obtained user identity
      */
-    private _userIdentity: UserIdentity<TUserInfo>;
+    private _userIdentity: UserIdentity<TUserInfo>|null = null;
 
     //######################### public properties #########################
 
@@ -73,14 +53,13 @@ export class AuthenticationService<TUserInfo = any>
     /**
      * Gets last value of obtained user identity, recomended to use only after authenticationChanged was emitted
      */
-    public get userIdentity(): UserIdentity<TUserInfo>
+    public get userIdentity(): UserIdentity<TUserInfo>|null
     {
         return this._userIdentity;
     }
 
     //######################### constructor #########################
-    //TODO - report bug, this is HACK to be compilable, check if it works when library will be compiled for IVY
-    constructor(@Inject(Injector) private _options: AuthenticationServiceOptions<TUserInfo>)
+    constructor(private _options: AuthenticationServiceOptions<TUserInfo>)
     {
         this.isInitialized = new Promise(resolve => this._isInitializedResolver = resolve);
     }
@@ -94,7 +73,7 @@ export class AuthenticationService<TUserInfo = any>
      */
     public isAuthorizedSync(permission: string): boolean
     {
-        if(isArray(this._userIdentity?.permissions))
+        if(this._userIdentity && isArray(this._userIdentity.permissions))
         {
             return this._userIdentity.permissions.indexOf(permission) > -1;
         }
@@ -137,7 +116,6 @@ export class AuthenticationService<TUserInfo = any>
     /**
      * Gets user identity
      * @param refresh - Indication that server get user identity should be called, otherwise cached response will be used
-     * @returns Promise
      */
     public getUserIdentity(refresh?: boolean): Promise<UserIdentity<TUserInfo>>
     {
@@ -182,7 +160,7 @@ export class AuthenticationService<TUserInfo = any>
      */
     public login(accessToken: AccessToken): Observable<UserIdentity>
     {
-        return new Observable((observer: Observer<any>) =>
+        return new Observable(observer =>
         {
             this._options.login(accessToken)
                 .subscribe(() =>
@@ -205,9 +183,9 @@ export class AuthenticationService<TUserInfo = any>
      * Methods logs out user out of system
      * @returns Observable
      */
-    public logout(): Observable<any>
+    public logout(): Observable<void>
     {
-        return new Observable((observer: Observer<any>) =>
+        return new Observable(observer =>
         {
             this._options.logout()
                 .subscribe(() =>
@@ -215,7 +193,7 @@ export class AuthenticationService<TUserInfo = any>
                     this.getUserIdentity(true)
                         .then(() =>
                         {
-                            observer.next(null);
+                            observer.next();
                             observer.complete();
                         });
                 }, error =>

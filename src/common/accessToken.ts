@@ -3,18 +3,17 @@
  */
 export class AccessToken
 {
+    //######################### constructor #########################
+
     /**
-     * Username used for authentication
+     * Creates instance of `AccessToken`
+     * @param userName - username used for authentication
+     * @param password - password used for authentication
+     * @param rememberMe - indication that user should be remembered for next access
      */
-    public userName: string;
-    
-    /**
-     * Password used for authentication
-     */
-    public password: string;
-    
-    /**
-     * Indication that user should be remembered for next access
-     */
-    public rememberMe: boolean;
+    constructor(public userName: string,
+                public password: string,
+                public rememberMe: boolean)
+    {
+    }
 }

@@ -14,7 +14,7 @@ export function isAuthorized(authSvc: AuthenticationService,
                              conditionString: boolean = false,
                              addCondition: boolean = true): boolean
 {
-    return evaluatePermissions(authSvc.userIdentity.permissions,
+    return evaluatePermissions(authSvc.userIdentity?.permissions ?? [],
                                condition,
                                andCondition,
                                conditionString,
