@@ -1,6 +1,12 @@
 # Changelog
 
-## Version 8.0.0 (2021-10-26)
+## Version 8.0.1 (2022-02-16)
+
+### Bugfixes
+
+- fixed compilation errors because of wrong deps versions
+
+## Version 8.0.0 (2022-02-15)
 
 ### Bugfixes
 - `AuthenticationService` `login` method now returns `UserIdentity` instead of any
