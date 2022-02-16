@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {isArray} from '@jscrpt/common';
-import {Observable, Observer, Subject, EMPTY} from 'rxjs';
+import {Observable, Subject, EMPTY} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 
 import {UserIdentity} from './userIdentity';
