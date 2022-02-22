@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 9.0.1 (2022-02-22)
+
+### Bug Fixes
+
+- fixed typings, not using rolled up typings for now
+
 ## Version 9.0.0 (2022-02-16)
 
 ### Features
@@ -57,7 +63,7 @@
 
 - minimal supported version of *Angular* is `10.0.0`
 - minimal supported version of `@jscrpt/common` is `1.2.0`
-- minimal supported version of `@anglr/common` is `8.0.0`
+- minimal supported version of `@anglr/common` is `9.0.0`
 - removed `AuthInterceptorConfig`, now using `AuthenticationService` instead
 - `AuthorizeDirective` now initialy working synchronously
 - `AuthInterceptor` has new constructor parameters
