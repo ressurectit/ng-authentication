@@ -1,5 +1,33 @@
 # Changelog
 
+## Version 10.0.0 (2022-02-24)
+
+### Bug Fixes
+
+- `AuthorizeDirective` now check permissions also when one of inputs have changed
+- fixed `AuthGuard`, now correctly blocks changing of route from login page using links or navigations using router
+
+### Features
+
+- new `AuthorizeOptions` interface, options passed to `Authorize` decorator
+    - property `permission` name of permission or array of permissions that is requested for displaying component
+    - property `andCondition` indication that AND condition should be used instead of OR condition if multiple permissions are provided
+    - property `conditionString` indication that provided string is set of loggical operations among permission names, if this is true andCondition is ignored
+    - property `addCondition` callback for additional condition that is added to evaluation of permission
+- `Authorize` decorator
+    - now accepts also array of permission names and `AuthorizeOptions`
+    - allows to set authorize for specific route using second parameter, overriding common authorize if specified
+    - updated `AuthGuard` to be able to work with this new type of `Authorize` decorator
+- new `ComponentRouteAuthorized` decorator, which defines route for component on which is this decorator applied, automatically adds `AuthGuard`
+
+### BREAKING CHANGES
+
+- `AuthGuard` has new parameters in constructor (`Injector`, `Router`)
+- `AuthenticationServiceOptions` class
+    - `isAuthPage` method has new parameter path which allows also checking specified path whether is auth page
+- `AuthenticationService` class
+    - `isAuthPage` method has new parameter path which allows also checking specified path whether is auth page
+
 ## Version 9.0.1 (2022-02-22)
 
 ### Bug Fixes

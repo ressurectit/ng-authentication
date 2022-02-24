@@ -221,11 +221,11 @@ export class AuthenticationService<TUserInfo = any>
     }
 
     /**
-     * Gets indicatio whether current state of app is displaying login page
-     * @returns boolean
+     * Gets indication whether current state of app is displaying auth page or provided path is checked
+     * @param path - Path to be tested whether is auth page, if not set, current page is checked
      */
-    public isAuthPage(): boolean
+    public isAuthPage(path?: string): boolean
     {
-        return this._options.isAuthPage();
+        return this._options.isAuthPage(path);
     }
 }

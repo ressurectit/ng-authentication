@@ -17,9 +17,10 @@ export abstract class AuthenticationServiceOptions<TUserInfo = any>
     public abstract login(accessToken: AccessToken): Observable<void>;
     
     /**
-     * Gets indication whether current state of app is displaying auth page
+     * Gets indication whether current state of app is displaying auth page or provided path is checked
+     * @param path - Path to be tested whether is auth page, if not set, current page is checked
      */
-    public abstract isAuthPage(): boolean;
+    public abstract isAuthPage(path?: string): boolean;
 
     /**
      * Methods logs out user out of system

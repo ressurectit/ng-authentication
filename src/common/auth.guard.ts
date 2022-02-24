@@ -1,9 +1,11 @@
-import {Injectable} from '@angular/core';
-import {CanActivate, ActivatedRouteSnapshot} from '@angular/router';
-import {Observable} from 'rxjs';
+import {Injectable, Injector} from '@angular/core';
+import {CanActivate, ActivatedRouteSnapshot, Router, UrlTree, UrlSegmentGroup} from '@angular/router';
+import {isBlank, resolvePromiseOr, flatMapArray} from '@jscrpt/common';
 
+import {AuthorizeOptions} from './authorize.decorator';
 import {AuthenticationService} from './authentication.service';
 import {AuthorizationDecoratedComponent} from './authorize.decorator';
+import {evaluatePermissions} from '../misc/utils';
 
 /**
  * Routing guard that is used for authorization of user
@@ -12,7 +14,9 @@ import {AuthorizationDecoratedComponent} from './authorize.decorator';
 export class AuthGuard implements CanActivate
 {
     //######################### constructor #########################
-    constructor(private authService: AuthenticationService)
+    constructor(private _authSvc: AuthenticationService,
+                private _injector: Injector,
+                private _router: Router)
     {
     }
 
@@ -21,57 +25,70 @@ export class AuthGuard implements CanActivate
     /**
      * Tests whether component can be activated
      * @param next - Information about next coming route
-     * @param state - Information about router state
-     * @returns Observable
      */
-    canActivate(next: ActivatedRouteSnapshot) : Observable<boolean>
+    public async canActivate(next: ActivatedRouteSnapshot) : Promise<boolean>
     {
         const component = next.component as unknown as AuthorizationDecoratedComponent;
-        const permission: string = component.permissionName;
+        let authOptions: AuthorizeOptions|undefined;
 
-        return new Observable(observer =>
+        //route specific auth options
+        if(next.routeConfig?.path &&
+           component.routeSpecificPermissions?.[next.routeConfig.path])
         {
-            this.authService
-                .getUserIdentity()
-                .catch(() =>
-                {
-                    console.error('Unexpected error in AuthGuard!');
-                    observer.next(false);
-                    observer.complete();
-                        
-                    return;
-                })
-                .then(userData =>
-                {
-                    if(userData)
-                    {
-                        if(userData.permissions.indexOf(permission) < 0 && userData.isAuthenticated)
-                        {
-                            this.authService.showAccessDenied();
-                            observer.next(false);
-                            observer.complete();
-                        
-                            return;
-                        }
-                        else if(userData.permissions.indexOf(permission) < 0 && !userData.isAuthenticated && !this.authService.isAuthPage())
-                        {
-                            this.authService.showAuthPage();
-                            observer.next(false);
-                            observer.complete();
-                            
-                            return;
-                        }
+            authOptions = component.routeSpecificPermissions[next.routeConfig.path];
+        }
+        //common auth options
+        else if(component.permissions)
+        {
+            authOptions = component.permissions;
+        }
+        
+        if(!authOptions)
+        {
+            return true;
+        }
 
-                        observer.next(true);
-                        observer.complete();
+        let addCondition: boolean = false;
 
-                        return;
-                    }
+        //evaluate add condition
+        if(authOptions.addCondition)
+        {
+            addCondition = await resolvePromiseOr(authOptions.addCondition(this._injector));
+        }
 
-                    console.warn('No UserData in AuthGuard!');
-                    observer.next(false);
-                    observer.complete();
-                });
-        });
+        const userIdentity = this._authSvc.userIdentity;
+
+        if(isBlank(userIdentity))
+        {
+            throw new Error('AuthenticationService must be initialized before first use of AuthGuard');
+        }
+
+        const authorized = evaluatePermissions(userIdentity.permissions,
+                                               authOptions.permission,
+                                               authOptions.andCondition ?? false,
+                                               authOptions.conditionString ?? false,
+                                               addCondition);
+
+        const urlSegmentGroup = new UrlSegmentGroup(flatMapArray(next.pathFromRoot.map(itm => itm.url)), {});
+        const urlTree = new UrlTree();
+        urlTree.root = urlSegmentGroup;
+        const nextPath = this._router.serializeUrl(urlTree);
+
+        //user is authenticated and not authorized
+        if(!authorized && userIdentity.isAuthenticated)
+        {
+            this._authSvc.showAccessDenied();
+
+            return false;
+        }
+        //not authorized, not authenticated, not on login page
+        else if(!authorized && !userIdentity.isAuthenticated && !this._authSvc.isAuthPage(nextPath))
+        {
+            this._authSvc.showAuthPage();
+            
+            return false;
+        }
+
+        return true;
     }
 }

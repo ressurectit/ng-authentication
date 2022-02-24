@@ -2,7 +2,8 @@ export {AuthenticationServiceOptions} from './common/authenticationServiceOption
 export {UserIdentity} from './common/userIdentity';
 export {AuthenticationService} from './common/authentication.service';
 export {AuthGuard} from './common/auth.guard';
-export {Authorize} from './common/authorize.decorator';
+export {Authorize, AuthorizeOptions} from './common/authorize.decorator';
+export {ComponentRouteAuthorized} from './common/componentRouteAuthorized.decorator';
 export {AuthorizeDirective} from './common/authorize.directive';
 export {AccessToken} from './common/accessToken';
 export {LetAuthorizedContext, LetAuthorizedDirective} from './common/letAuthorized.directive';

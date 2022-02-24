@@ -1,4 +1,4 @@
-import {Directive, TemplateRef, ViewContainerRef, OnInit, Input, OnDestroy, ChangeDetectorRef} from '@angular/core';
+import {Directive, TemplateRef, ViewContainerRef, OnInit, Input, OnDestroy, ChangeDetectorRef, OnChanges} from '@angular/core';
 import {isString, isBoolean, isBlank} from '@jscrpt/common';
 import {Subscription} from 'rxjs';
 
@@ -13,7 +13,7 @@ import {UserIdentity} from './userIdentity';
 {
     selector: '[authorize]'
 })
-export class AuthorizeDirective implements OnInit, OnDestroy
+export class AuthorizeDirective implements OnInit, OnChanges, OnDestroy
 {
     //######################### private fields #########################
 
@@ -21,6 +21,16 @@ export class AuthorizeDirective implements OnInit, OnDestroy
      * Subscription for changes in authentication
      */
     private _subscription: Subscription|null = null;
+
+    /**
+     * Indication whether on init was already called or not
+     */
+    private _afterOnInit: boolean = false;
+
+    /**
+     * Indication whether is content rendered or not
+     */
+    private _rendered: boolean = false;
 
     //######################### public properties - inputs #########################
 
@@ -83,6 +93,11 @@ export class AuthorizeDirective implements OnInit, OnDestroy
             this.permission = this.permission.split(',').map(itm => itm.trim());
         }
 
+        if(isBlank(this._authService.userIdentity))
+        {
+            throw new Error('AuthenticationService must be initialized before first use of AuthorizeDirective');
+        }
+
         //synchronous render if permission is present
         this._renderIfPermission(this._authService.userIdentity);
 
@@ -93,8 +108,25 @@ export class AuthorizeDirective implements OnInit, OnDestroy
                 this._renderIfPermission(userIdentity);
                 this._changeDetector.detectChanges();
             }, () => {});
+
+        this._afterOnInit = true;
     }
     
+    //######################### public methods - implementation of OnChanges #########################
+    
+    /**
+     * Called when input value changes
+     */
+    public ngOnChanges(): void
+    {
+        if(!this._afterOnInit)
+        {
+            return;
+        }
+
+        this._renderIfPermission(this._authService.userIdentity);
+    }
+
     //######################### public methods - implementation of OnDestroy #########################
     
     /**
@@ -123,15 +155,28 @@ export class AuthorizeDirective implements OnInit, OnDestroy
 
         if(userIdentity)
         {
-            this._viewContainer.clear();
-        
             if(evaluatePermissions(userIdentity.permissions,
                                    this.permission,
                                    this.andCondition,
                                    this.conditionString,
                                    this.addCondition))
             {
+                //already rendered, do nothing
+                if(this._rendered)
+                {
+                    return;
+                }
+
+                this._viewContainer.clear();
                 this._viewContainer.createEmbeddedView(this._template);
+
+                this._rendered = true;
+            }
+            else
+            {
+                this._viewContainer.clear();
+
+                this._rendered = false;
             }
         }
     }
