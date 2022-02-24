@@ -48,7 +48,7 @@ export class AuthGuard implements CanActivate
             return true;
         }
 
-        let addCondition: boolean = false;
+        let addCondition: boolean = true;
 
         //evaluate add condition
         if(authOptions.addCondition)
