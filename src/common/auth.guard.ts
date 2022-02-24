@@ -72,6 +72,7 @@ export class AuthGuard implements CanActivate
         const urlSegmentGroup = new UrlSegmentGroup(flatMapArray(next.pathFromRoot.map(itm => itm.url)), {});
         const urlTree = new UrlTree();
         urlTree.root = urlSegmentGroup;
+        urlTree.queryParams = {};
         const nextPath = this._router.serializeUrl(urlTree);
 
         //user is authenticated and not authorized
