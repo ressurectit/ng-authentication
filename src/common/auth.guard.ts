@@ -1,6 +1,6 @@
 import {Injectable, Injector} from '@angular/core';
 import {CanActivate, ActivatedRouteSnapshot, Router, UrlTree, UrlSegmentGroup} from '@angular/router';
-import {isBlank, resolvePromiseOr, flatMapArray} from '@jscrpt/common';
+import {isBlank, flatMapArray} from '@jscrpt/common';
 
 import {AuthorizeOptions} from './authorize.decorator';
 import {AuthenticationService} from './authentication.service';
@@ -53,7 +53,7 @@ export class AuthGuard implements CanActivate
         //evaluate add condition
         if(authOptions.addCondition)
         {
-            addCondition = await resolvePromiseOr(authOptions.addCondition(this._injector));
+            addCondition = await authOptions.addCondition(this._injector);
         }
 
         const userIdentity = this._authSvc.userIdentity;

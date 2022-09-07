@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 11.0.0 (2022-09-07)
+
+### BREAKING CHANGES
+
+- dropped support of `Node.js` version `12`
+- minimal supported version of `rxjs` is now `7.5.0`
+- minimal supported version of `@jscrpt/common` is now `3.0.0`
+- minimal supported version of `tslib` is now `2.4.0`
+
 ## Version 10.0.0 (2022-02-24)
 
 ### Bug Fixes
