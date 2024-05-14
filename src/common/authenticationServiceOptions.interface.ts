@@ -6,7 +6,7 @@ import {AccessToken} from './accessToken';
 /**
  * Options for authentication service
  */
-export abstract class AuthenticationServiceOptions<TUserInfo = any>
+export abstract class AuthenticationServiceOptions<TUserInfo = unknown>
 {
     //######################### public methods #########################
 

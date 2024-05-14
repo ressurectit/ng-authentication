@@ -11,7 +11,7 @@ import {AccessToken} from './accessToken';
  * Authentication service managing authentication
  */
 @Injectable({providedIn: 'root'})
-export class AuthenticationService<TUserInfo = any>
+export class AuthenticationService<TUserInfo = unknown>
 {
     //######################### private fields #########################
 

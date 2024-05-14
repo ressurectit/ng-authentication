@@ -21,7 +21,8 @@ export interface LetAuthorizedContext
 @Directive(
 {
     selector: '[letAuthorized]',
-    exportAs: 'authorized'
+    exportAs: 'authorized',
+    standalone: true,
 })
 export class LetAuthorizedDirective implements OnInit, OnChanges, OnDestroy
 {

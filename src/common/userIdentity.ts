@@ -1,7 +1,7 @@
 /**
  * Information about user in accessing system
  */
-export class UserIdentity<TUserInfo = any>
+export class UserIdentity<TUserInfo = unknown>
 {
     //######################### public properties #########################
     

@@ -11,7 +11,8 @@ import {UserIdentity} from './userIdentity';
  */
 @Directive(
 {
-    selector: '[authorize]'
+    selector: '[authorize]',
+    standalone: true,
 })
 export class AuthorizeDirective implements OnInit, OnChanges, OnDestroy
 {
@@ -37,8 +38,8 @@ export class AuthorizeDirective implements OnInit, OnChanges, OnDestroy
     /**
      * Name of permission that is requested for displaying element
      */
-    @Input('authorize')
-    public permission: string | string[] = null!;
+    @Input({alias: 'authorize', required: true})
+    public permission!: string | string[];
 
     /**
      * Indication that AND condition should be used instead of OR condition if multiple permissions are provided
@@ -146,7 +147,7 @@ export class AuthorizeDirective implements OnInit, OnChanges, OnDestroy
     /**
      * Renders content if user has permissions
      */
-    private _renderIfPermission(userIdentity: UserIdentity|null)
+    private _renderIfPermission(userIdentity: UserIdentity|null): void
     {
         if(!isString(this.permission) && !Array.isArray(this.permission))
         {

@@ -1,5 +1,26 @@
 # Changelog
 
+## Version 12.0.0 (2024-05-14)
+
+### Features
+
+- new `HasPermissionPipe` pipe, that tests whether user has permission
+    - is `standalone`
+- updated `AuthorizeDirective` directive
+    - is now `standalone`
+- updated `LetAuthorizedDirective` directive
+    - is now `standalone`
+
+### BREAKING CHANGES
+
+- minimal supported version of `node.js` is `18`
+- minimal supported version of `@angular` is `17.3.0`
+- minimal supported version of `@jscrpt/common` is `6.0.0`
+- minimal supported version of `@anglr/common` is `19.0.0`
+- minimal supported version of `tslib` is `2.6.2`
+- updated all `any` to `unknown` generic type defaults
+- removed `AuthorizationModule` module, both directives declared in it are now `standalone`
+
 ## Version 11.0.0 (2022-09-07)
 
 ### BREAKING CHANGES
