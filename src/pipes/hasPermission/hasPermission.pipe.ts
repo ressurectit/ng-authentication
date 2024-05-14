@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
-import {AuthenticationService} from '../../common/authentication.service';
+import {AuthenticationService} from '../../services';
 import {isAuthorized} from '../../misc/utils';
 
 /**

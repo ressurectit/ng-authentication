@@ -4,12 +4,15 @@
 
 ### Features
 
+- new `authGuard` can activate fn, that represents routing guard that is used for authorization of user
 - new `HasPermissionPipe` pipe, that tests whether user has permission
     - is `standalone`
 - updated `AuthorizeDirective` directive
     - is now `standalone`
 - updated `LetAuthorizedDirective` directive
     - is now `standalone`
+- updated `AuthGuard` can activate type
+    - changed to can activate fn and is deprecated in favor of `authGuard`
 
 ### BREAKING CHANGES
 

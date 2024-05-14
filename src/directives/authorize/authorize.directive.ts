@@ -2,9 +2,9 @@ import {Directive, TemplateRef, ViewContainerRef, OnInit, Input, OnDestroy, Chan
 import {isString, isBoolean, isBlank} from '@jscrpt/common';
 import {Subscription} from 'rxjs';
 
-import {evaluatePermissions} from '../misc/utils';
-import {AuthenticationService} from './authentication.service';
-import {UserIdentity} from './userIdentity';
+import {evaluatePermissions} from '../../misc/utils';
+import {AuthenticationService} from '../../services';
+import type {UserIdentity} from '../../misc/types/userIdentity';
 
 /**
  * Directive that displays element if use is authorized

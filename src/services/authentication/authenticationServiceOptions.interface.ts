@@ -1,7 +1,6 @@
 import {Observable} from 'rxjs';
 
-import {UserIdentity} from './userIdentity';
-import {AccessToken} from './accessToken';
+import {UserIdentity, AccessToken} from '../../misc/types';
 
 /**
  * Options for authentication service

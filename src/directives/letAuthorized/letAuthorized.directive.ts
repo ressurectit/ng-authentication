@@ -2,9 +2,9 @@ import {ChangeDetectorRef, Directive, Input, OnChanges, OnDestroy, OnInit, Optio
 import {isBlank, nameof} from '@jscrpt/common';
 import {Subscription} from 'rxjs';
 
-import {evaluatePermissions} from '../misc/utils';
-import {AuthenticationService} from './authentication.service';
-import {UserIdentity} from './userIdentity';
+import {evaluatePermissions} from '../../misc/utils';
+import {AuthenticationService} from '../../services';
+import type {UserIdentity} from '../../misc/types';
 
 /**
  * Context used withing template of LetAuthorizedDirective (if used as structural directive)

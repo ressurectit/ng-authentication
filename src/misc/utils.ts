@@ -1,4 +1,4 @@
-import {AuthenticationService} from '../common/authentication.service';
+import type {AuthenticationService} from '../services';
 
 /**
  * Gets indication whether user is authorized

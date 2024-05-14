@@ -6,7 +6,7 @@ import {Observable, ObservableInput} from 'rxjs';
 import {catchError, tap} from 'rxjs/operators';
 
 import {AuthInterceptorOptions} from './authInterceptor.options';
-import {AuthenticationService} from '../common/authentication.service';
+import {AuthenticationService} from '../../services';
 
 /**
  * AuthInterceptor used for intercepting http responses and handling 401, 403 statuses

@@ -3,9 +3,8 @@ import {isArray} from '@jscrpt/common';
 import {Observable, Subject, EMPTY} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 
-import {UserIdentity} from './userIdentity';
+import {UserIdentity, AccessToken} from '../../misc/types';
 import {AuthenticationServiceOptions} from './authenticationServiceOptions.interface';
-import {AccessToken} from './accessToken';
 
 /**
  * Authentication service managing authentication
