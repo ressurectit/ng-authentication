@@ -1,0 +1,11 @@
+@use '@anglr/common/styles/themes/dark' as anglrCommonTheme;
+@use '@css-styles/themes' as themes;
+
+@use './scss/theme/defaultTheme' as defaultTheme;
+@use './scss/theme/dark' as appTheme;
+
+@use 'scss/theme/theme' with ($fontSize: appTheme.$fontSize,
+                              $theme: themes.defineTheme(),
+                              $appTheme: defaultTheme.defineTheme(appTheme.$appTheme),
+                              $themeName: 'dark',
+                              $anglrCommonTheme: anglrCommonTheme.defineTheme());

@@ -1,4 +1,5 @@
 /.vscode
+demo/
 temp/
 .eslintrc.json
 api-extractor.json

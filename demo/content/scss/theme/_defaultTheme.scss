@@ -1,0 +1,19 @@
+@use 'sass:color';
+@use 'sass:map';
+
+//############## AVAILABLE COLORS ##############
+
+
+
+//############## DEFAULT THEME ##############
+
+$_defaultTheme:
+(
+);
+
+@function defineTheme($theme: ())
+{
+    $theme: map.deep-merge($_defaultTheme, $theme);
+
+    @return $theme;
+}

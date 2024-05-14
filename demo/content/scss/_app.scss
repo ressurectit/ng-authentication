@@ -1,0 +1,37 @@
+@use '@css-styles/common' as mixins;
+@use '@css-styles/common' as misc;
+@use '@css-styles/themes' as themes;
+@use '@anglr/common/styles' as anglrCommon;
+
+//---------------------- PAGE STYLING ----------------------
+.app-page
+{
+    font-family: var(--font-family);
+    -webkit-user-select: none;
+    user-select: none;
+    background-color: var(--page-background);
+    color: var(--page-foreground);
+
+    //############## PACKAGES ##############
+
+    @include anglrCommon.buildThemeCss;
+
+    //############## SCROLLBAR ##############
+
+    @include mixins.thin-scrollbar-color(--page-scrollbar);
+
+    //############## PARTS ##############
+
+    @include themes.css-alerts;
+    @include themes.css-blocks;
+    @include themes.css-buttons;
+    @include themes.css-common-components;
+    @include themes.css-forms;
+    @include themes.css-grid;
+    @include themes.css-titles;
+
+    //############## MISC ##############
+
+    @include themes.css-common;
+    @include misc.misc-css;
+}

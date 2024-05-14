@@ -1,0 +1,69 @@
+{
+    "compilerOptions":
+    {
+        "target": "ES2022",
+        "module": "ES2022",
+        "sourceMap": true,
+        "experimentalDecorators": true,
+        "declaration": false,
+        "removeComments": true,
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "noImplicitOverride": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strict": true,
+        "strictNullChecks": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "importHelpers": true,
+        "useDefineForClassFields": false,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "newLine": "lf",
+        "moduleResolution": "node",
+        "outDir": "wwwroot/app-tsc",
+        "lib":
+        [
+            "ES2022",
+            "dom"
+        ],
+        "types":
+        [
+            "node",
+        ],
+        "plugins":
+        [
+            {
+                "name": "@angular/language-service"
+            }
+        ]
+    },
+    "files":
+    [
+        "config/global.d.ts"
+    ],
+    "include":
+    [
+        "app/**/*.ts",
+        "server.ts"
+    ],
+    "exclude":
+    [
+        "node_modules"
+    ],
+    "angularCompilerOptions":
+    {
+        "strictInjectionParameters": true,
+        "strictInputAccessModifiers": true,
+        "strictTemplates": true,
+        "extendedDiagnostics":
+        {
+            "checks":
+            {
+                "interpolatedSignalNotInvoked": "error"
+            }
+        }
+    }
+}

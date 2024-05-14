@@ -68,6 +68,7 @@ export function evaluatePermissions(permissions: string[],
             cond.replace(/!?(.*?)(?:&+|\|+|\(|\)|$)/g, '$1')
                 .split(' ')
                 .filter(itm => itm.trim())
+                .sort((a, b) => b.length - a.length)
                 .forEach(permissionName => cond = cond.replace(new RegExp(permissionName, 'g'), (permissions.indexOf(permissionName) > -1).toString()));
 
             if(new Function(`return (${cond})`)())

@@ -1,0 +1,52 @@
+{
+    "name": "ng-universal-demo",
+    "version": "1.0.0",
+    "description": "Angular sample application",
+    "type": "module",
+    "scripts": {
+        "build": "ng build",
+        "build:min": "ng build -c production",
+        "prebuild": "npm run version:build && npm run config:build",
+        "prebuild:min": "npm run clean && npm run version:build && npm run config:build",
+        "clean": "rimraf wwwroot config/configOverride.js config/configServerOverride.js config/configBrowserOverride.js version.json",
+        "clean:deps": "rimraf package-lock.json node_modules .angular || echo 'node_modules removed'",
+        "clean:all": "npm run clean && npm run clean:deps",
+        "version:build": "ngv -e \"node write.version.cjs\"",
+        "config:build": "node generateConfig.js",
+        "server": "node server.js",
+        "lint": "eslint app/**/*.ts",
+        "prestart": "npm run version:build && npm run config:build",
+        "start": "concurrently \"npm run server -- --devPort\" \"ng serve\""
+    },
+    "engines": {
+        "node": "^18.13.0 || >=20.9.0"
+    },
+    "author": "kukjevov",
+    "license": "MIT",
+    "devDependencies": {
+        "@anglr/animations": "^10.0.0",
+        "@css-styles/common": "1.1.0",
+        "@css-styles/themes": "1.0.0-beta.20240213131714",
+        "zone.js": "0.14.5",
+        "extend": "3.0.2",
+        "@types/express": "4.17.21",
+        "@types/compression": "1.7.5",
+        "@angular/ssr": "^17.3.0",
+        "@angular/platform-server": "^17.3.0",
+        "@angular/forms": "^17.3.0",
+        "@angular/material": "^17.3.0",
+        "@angular/cdk": "^17.3.0",
+        "@angular/cli": "^17.3.0",
+        "@angular-devkit/build-angular": "^17.3.0",
+        "dotenv": "10.0.0",
+        "envsub": "4.1.0",
+        "chalk": "4.1.2",
+        "yargs": "17.7.2",
+        "concurrently": "8.2.0",
+        "body-parser": "1.20.2",
+        "express": "4.19.2",
+        "compression": "1.7.4",
+        "nodejs-connect-extensions": "2.0.5",
+        "http-proxy-middleware": "2.0.6"
+    }
+}
