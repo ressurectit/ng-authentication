@@ -104,11 +104,17 @@ export class AuthorizeDirective implements OnInit, OnChanges, OnDestroy
 
         this._subscription = this._authService
             .authenticationChanged
-            .subscribe(userIdentity =>
+            .subscribe(
             {
-                this._renderIfPermission(userIdentity);
-                this._changeDetector.detectChanges();
-            }, () => {});
+                next: userIdentity =>
+                {
+                    this._renderIfPermission(userIdentity);
+                    this._changeDetector.detectChanges();
+                },
+                error()
+                {
+                }
+            });
 
         this._afterOnInit = true;
     }

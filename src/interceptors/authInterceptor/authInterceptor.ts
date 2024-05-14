@@ -67,24 +67,15 @@ export class AuthInterceptor implements HttpInterceptor
     {
         this.requestsInProgress++;
 
-        return next.handle(req).pipe(catchError((err) =>
-        {
-            return new Observable(observer =>
+        return next
+            .handle(req)
+            .pipe(catchError((err) =>
             {
-                //client error, not response from server, or is ignored
-                if (err.error instanceof Error || 
-                    req.context.get(IGNORED_INTERCEPTORS).some(itm => itm == AuthInterceptor))
+                return new Observable(observer =>
                 {
-                    observer.error(err);
-                    observer.complete();
-
-                    return;
-                }
-
-                //if auth error
-                if(err.status == 403 || err.status == 401)
-                {
-                    if(this._blocked)
+                    //client error, not response from server, or is ignored
+                    if (err.error instanceof Error || 
+                        req.context.get(IGNORED_INTERCEPTORS).some(itm => itm == AuthInterceptor))
                     {
                         observer.error(err);
                         observer.complete();
@@ -92,50 +83,65 @@ export class AuthInterceptor implements HttpInterceptor
                         return;
                     }
 
-                    this._blocked = true;
-
-                    //auth error from auth page are ignored
-                    if(this._authSvc.isAuthPage())
+                    //if auth error
+                    if(err.status == 403 || err.status == 401)
                     {
-                        observer.error(err);
-                        observer.complete();
-
-                        return;
-                    }
-
-                    //auth error from other pages
-                    this._authSvc.getUserIdentity(true)
-                        .then(async ({isAuthenticated}) =>
+                        if(this._blocked)
                         {
-                            //access denied user authenticated, not authorized
-                            if((isAuthenticated && this._options.treatUnauthorizedAsForbidden) ||
-                               (isAuthenticated && !this._options.treatUnauthorizedAsForbidden && err.status == 403))
+                            observer.error(err);
+                            observer.complete();
+
+                            return;
+                        }
+
+                        this._blocked = true;
+
+                        //auth error from auth page are ignored
+                        if(this._authSvc.isAuthPage())
+                        {
+                            observer.error(err);
+                            observer.complete();
+
+                            return;
+                        }
+
+                        //auth error from other pages
+                        this._authSvc.getUserIdentity(true)
+                            .then(async ({isAuthenticated}) =>
                             {
-                                await this._authSvc.showAccessDenied();
+                                //access denied user authenticated, not authorized
+                                if((isAuthenticated && this._options.treatUnauthorizedAsForbidden) ||
+                                (isAuthenticated && !this._options.treatUnauthorizedAsForbidden && err.status == 403))
+                                {
+                                    await this._authSvc.showAccessDenied();
+
+                                    observer.complete();
+
+                                    return;
+                                }
+
+                                //show auth page, user not authenticated
+                                await this._authSvc.showAuthPage();
 
                                 observer.complete();
 
                                 return;
-                            }
+                            })
+                            .catch(() => observer.complete());
 
-                            //show auth page, user not authenticated
-                            await this._authSvc.showAuthPage();
+                        return;
+                    }
 
-                            observer.complete();
-
-                            return;
-                        })
-                        .catch(() => observer.complete());
-
-                    return;
-                }
-
-                //other errors
-                observer.error(err);
-                observer.complete();
-            }) as ObservableInput<HttpEvent<unknown>>;
-        }),
-        tap(() => this.requestsInProgress--, () => this.requestsInProgress--));
+                    //other errors
+                    observer.error(err);
+                    observer.complete();
+                }) as ObservableInput<HttpEvent<unknown>>;
+            }),
+            tap(
+            {
+                next: () => this.requestsInProgress--, 
+                error: () => this.requestsInProgress--,
+            }));
     }
 }
 

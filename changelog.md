@@ -4,6 +4,7 @@
 
 ### Features
 
+- removed deprecated `rxjs` pipes usagess
 - new `authGuard` can activate fn, that represents routing guard that is used for authorization of user
 - new `HasPermissionPipe` pipe, that tests whether user has permission
     - is `standalone`

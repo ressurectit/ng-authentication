@@ -161,19 +161,24 @@ export class AuthenticationService<TUserInfo = unknown>
     {
         return new Observable(observer =>
         {
-            this._options.login(accessToken)
-                .subscribe(() =>
+            this._options
+                .login(accessToken)
+                .subscribe(
                 {
-                    this.getUserIdentity(true)
-                        .then(identity =>
-                        {
-                            observer.next(identity);
-                            observer.complete();
-                        });
-                }, error =>
-                {
-                    observer.error(error);
-                    observer.complete();
+                    next: () =>
+                    {
+                        this.getUserIdentity(true)
+                            .then(identity =>
+                            {
+                                observer.next(identity);
+                                observer.complete();
+                            });
+                    }, 
+                    error(error)
+                    {
+                        observer.error(error);
+                        observer.complete();
+                    }
                 });
         });
     }
@@ -186,19 +191,24 @@ export class AuthenticationService<TUserInfo = unknown>
     {
         return new Observable(observer =>
         {
-            this._options.logout()
-                .subscribe(() =>
+            this._options
+                .logout()
+                .subscribe(
                 {
-                    this.getUserIdentity(true)
-                        .then(() =>
-                        {
-                            observer.next();
-                            observer.complete();
-                        });
-                }, error =>
-                {
-                    observer.error(error);
-                    observer.complete();
+                    next: () =>
+                    {
+                        this.getUserIdentity(true)
+                            .then(() =>
+                            {
+                                observer.next();
+                                observer.complete();
+                            });
+                    },
+                    error(error)
+                    {
+                        observer.error(error);
+                        observer.complete();
+                    }
                 });
         });
     }

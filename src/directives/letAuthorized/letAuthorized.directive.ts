@@ -96,11 +96,17 @@ export class LetAuthorizedDirective implements OnInit, OnChanges, OnDestroy
 
         this._subscription = this._authSvc
             .authenticationChanged
-            .subscribe(userIdentity =>
+            .subscribe(
             {
-                this._processAuthorization(userIdentity);
-                this._changeDetector.detectChanges();
-            }, () => {});
+                next: userIdentity =>
+                {
+                    this._processAuthorization(userIdentity);
+                    this._changeDetector.detectChanges();
+                }, 
+                error()
+                {
+                }
+            });
     }
 
     //######################### public methods - implementation of OnChanges #########################
