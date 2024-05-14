@@ -24,8 +24,6 @@
         "deploy": "npm publish --loglevel error",
         "deploy:next": "npm publish --tag next --loglevel error",
         "lint": "eslint src/**/*.ts",
-        "preclean": "lerna run clean --scope=ng-universal-demo",
-        "preclean:deps": "lerna run clean:deps --scope=ng-universal-demo",
         "preclean:all": "lerna run clean:all --scope=ng-universal-demo",
         "prestart": "npm run build",
         "start": "concurrently \"npm run build -- --watch\" \"lerna run start --scope=ng-universal-demo\"",
