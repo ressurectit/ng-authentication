@@ -18,6 +18,8 @@ cache:
 
 install:
   - cmd: npm install --loglevel error
+  - ps: Remove-Item "./node_modules/$((Get-Content .\package.json | ConvertFrom-Json).name)" -Recurse -Force
+  - ps: Remove-Item "./node_modules/ng-universal-demo" -Recurse -Force
   - cmd: npm run clean
 
 build: off
