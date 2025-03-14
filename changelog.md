@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 12.1.0 (2025-03-14)
+
+### Features
+
+- new `authGuardDefinition` function, that creates authGuard using permission definition, use with lazy component routes
+
 ## Version 12.0.0 (2024-05-14)
 
 ### Features
