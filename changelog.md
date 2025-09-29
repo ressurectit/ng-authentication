@@ -1,5 +1,29 @@
 # Changelog
 
+## Version 13.0.0 (2025-09-29)
+
+### Features
+
+- new `suppressAuthInterceptor` function, that is auth interceptor used for intercepting http responses and suppressing 401, 403 statuses
+   - used as replacement of deprecated `SuppressAuthInterceptor` together with `SUPPRESS_AUTH_INTERCEPTOR_PROVIDER`
+- new `authInterceptor` function, that is auth interceptor used for intercepting http responses and handling 401, 403 statuses
+   - used as replacement of deprecated `AuthInterceptor` together with `AUTH_INTERCEPTOR_PROVIDER`
+- new `AuthInterceptorData` that, stores data for `authInterceptor`
+    - **properties**
+        - `requestsInProgress` counter for requests in progress
+        - `blocked` gets indication whether is handling of 401, 403 blocked because one request is already handled
+    - **methods**
+        - `setBlocked` sets blocked to true
+
+### BREAKING CHANGES
+
+- minimal supported version of `Node.js` is `20.19.0`
+- minimal supported version of `@angular` packages is `20.3.2`
+- minimal supported version of `@anglr/common` packages is `23.0.0`
+- minimal supported version of `@jscrpt/common` packages is `23.0.0`
+- minimal supported version of `rxjs` packages is `7.5.7`
+- minimal supported version of `tslib` packages is `2.8.1`
+
 ## Version 12.1.0 (2025-03-14)
 
 ### Features
