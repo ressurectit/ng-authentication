@@ -7,8 +7,8 @@ import {FakeAuthorizeDirective} from '../common/fakeAuthorize.directive';
  */
 @NgModule(
 {
-    declarations: [FakeAuthorizeDirective],
-    exports: [FakeAuthorizeDirective]
+    imports: [FakeAuthorizeDirective],
+    exports: [FakeAuthorizeDirective],
 })
 export class TestingModule
 {

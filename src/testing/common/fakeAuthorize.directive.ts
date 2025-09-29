@@ -5,7 +5,7 @@ import {Input, Directive, TemplateRef, ViewContainerRef} from '@angular/core';
  */
 @Directive(
 {
-    selector: '[authorize]'
+    selector: '[authorize]',
 })
 export class FakeAuthorizeDirective
 {
