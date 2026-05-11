@@ -20,7 +20,7 @@
 - minimal supported version of `Node.js` is `20.19.0`
 - minimal supported version of `@angular` packages is `20.3.2`
 - minimal supported version of `@anglr/common` packages is `23.0.0`
-- minimal supported version of `@jscrpt/common` packages is `23.0.0`
+- minimal supported version of `@jscrpt/common` packages is `7.0.0`
 - minimal supported version of `rxjs` packages is `7.5.7`
 - minimal supported version of `tslib` packages is `2.8.1`
 
