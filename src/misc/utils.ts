@@ -45,7 +45,7 @@ export function evaluatePermissions(permissions: string[],
             //AND Condition
             if(arrayPermission.map(perm => permissions.indexOf(perm) > -1).every(itm => itm === true))
             {
-                return true && addCondition;
+                return addCondition;
             }
         }
         else
@@ -53,7 +53,7 @@ export function evaluatePermissions(permissions: string[],
             //OR Condition
             if(arrayPermission.map(perm => permissions.indexOf(perm) > -1).indexOf(true) > -1)
             {
-                return true && addCondition;
+                return addCondition;
             }
         }
     }
@@ -73,7 +73,7 @@ export function evaluatePermissions(permissions: string[],
 
             if(new Function(`return (${cond})`)())
             {
-                return true && addCondition;
+                return addCondition;
             }
         }
         //Permission name string
@@ -83,7 +83,7 @@ export function evaluatePermissions(permissions: string[],
 
             if(permissions.indexOf(stringPermission) > -1)
             {
-                return true && addCondition;
+                return addCondition;
             }
         }
     }

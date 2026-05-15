@@ -27,12 +27,12 @@ export function authGuardDefinition(permission?: string|string[]|AuthorizeOption
             component?.routeSpecificPermissions?.[route.routeConfig.path]))
         {
             let options: AuthorizeOptions|undefined|null;
-            
+
             if(isString(permission) || Array.isArray(permission))
             {
                 options =
                 {
-                    permission
+                    permission,
                 };
             }
             else
@@ -47,7 +47,7 @@ export function authGuardDefinition(permission?: string|string[]|AuthorizeOption
         {
             authOptions = component.permissions;
         }
-        
+
         if(!authOptions)
         {
             return true;
@@ -69,10 +69,10 @@ export function authGuardDefinition(permission?: string|string[]|AuthorizeOption
         }
 
         const authorized = evaluatePermissions(userIdentity.permissions,
-                                            authOptions.permission,
-                                            authOptions.andCondition ?? false,
-                                            authOptions.conditionString ?? false,
-                                            addCondition);
+                                               authOptions.permission,
+                                               authOptions.andCondition ?? false,
+                                               authOptions.conditionString ?? false,
+                                               addCondition);
 
         const urlSegmentGroup = new UrlSegmentGroup(flatMapArray(route.pathFromRoot.map(itm => itm.url)), {});
         const urlTree = new UrlTree();
@@ -91,12 +91,12 @@ export function authGuardDefinition(permission?: string|string[]|AuthorizeOption
         else if(!authorized && !userIdentity.isAuthenticated && !authSvc.isAuthPage(nextPath))
         {
             authSvc.showAuthPage();
-            
+
             return false;
         }
 
         return true;
-    }
+    };
 }
 
 /**
@@ -108,7 +108,7 @@ export const authGuard: CanActivateFn = authGuardDefinition();
 
 /**
  * Routing guard that is used for authorization of user
- * 
+ *
  * @deprecated use `authGuard` instead, will be removed in future
  */
 export const AuthGuard: CanActivateFn = authGuard;

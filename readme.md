@@ -103,7 +103,8 @@ export class AccountAuthOptions extends AuthenticationServiceOptions
     public getUserIdentity(): Observable<UserIdentity>
     {
         // Fetch user identity from your backend/auth provider
-        return of({
+        return of(
+        {
             isAuthenticated: true,
             userName: 'john.doe',
             firstName: 'John',
@@ -149,37 +150,32 @@ import {routes} from './app.component.routes';
 export const appProviders: (Provider | EnvironmentProviders)[] =
 [
     provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(
-        withInterceptors([authInterceptor]),
-    ),
+    provideHttpClient(withInterceptors([authInterceptor])),
 
     // Register your AuthenticationServiceOptions implementation
-    <ClassProvider>{
+    <ClassProvider>
+    {
         provide: AuthenticationServiceOptions,
         useClass: AccountAuthOptions,
     },
 
     // Initialize authentication on app startup
-    <FactoryProvider>{
-        provide: APP_INITIALIZER,
-        multi: true,
-        useFactory: () =>
-        {
-            const authService = inject(AuthenticationService);
+    provideAppInitializer(async () =>
+    {
+        const authService = inject(AuthenticationService);
 
-            return async () =>
-            {
-                try
-                {
-                    await authService.getUserIdentity();
-                }
-                catch(e)
-                {
-                    console.error('Authentication initialization failed:', e);
-                }
-            };
-        },
-    },
+        try
+        {
+            await authService
+                .getUserIdentity();
+        }
+        catch(e)
+        {
+            alert(`Authentication initialization failed: ${e}`);
+
+            throw e;
+        }
+    }),
 ];
 ```
 
@@ -275,6 +271,12 @@ export class MainMenuComponent implements OnInit, OnDestroy
 
     public ngOnInit(): void
     {
+        this._authService.getUserIdentity().then((identity: UserIdentity) =>
+        {
+            this.userName = `${identity.firstName} ${identity.surname}`;
+            this.isAuthenticated = identity.isAuthenticated;
+        });
+
         this._subscription = this._authService.authenticationChanged
             .subscribe((identity: UserIdentity) =>
             {
@@ -299,7 +301,7 @@ export class MainMenuComponent implements OnInit, OnDestroy
 
 ### @Authorize
 
-Class decorator that attaches permission metadata to a component. Used in conjunction with `authGuard` to protect routes. Use together with `ModuleRoutes` decorator or `extractRoutes` function from `@anglr/common/router`.
+Class decorator that attaches permission metadata to a component. Used in conjunction with `authGuard` to protect routes. Route must be defined using `ComponentRoute` decorator from `@anglr/common/router`. Use together with `ModuleRoutes` (creates lazy route module) decorator or `extractRoutes` (extracts routes from components) function from `@anglr/common/router`.
 
 ```typescript
 import {Authorize} from '@anglr/authentication';
@@ -352,7 +354,8 @@ export class ResourceComponent {}
 
 ```typescript
 @Component({...})
-@Authorize({
+@Authorize(
+{
     permission: 'download',
     addCondition: (injector) =>
     {
@@ -382,23 +385,23 @@ Convenience decorator that combines `@ComponentRoute` (from `@anglr/common/route
 ```typescript
 import {Authorize, ComponentRouteAuthorized} from '@anglr/authentication';
 
-@Component({
-    selector: 'prehlad-view',
-    templateUrl: 'prehlad.component.html',
-    standalone: true,
+@Component(
+{
+    selector: 'overview-view',
+    templateUrl: 'overview.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-@ComponentRouteAuthorized({path: 'prehlad'})
+@ComponentRouteAuthorized({path: 'overview'})
 @Authorize('users-list-page')
-export class PrehladComponent {}
+export class OverviewComponent {}
 ```
 
 This is equivalent to:
 
 ```typescript
-@ComponentRoute({path: 'prehlad', canActivate: [authGuard]})
+@ComponentRoute({path: 'overview', canActivate: [authGuard]})
 @Authorize('users-list-page')
-export class PrehladComponent {}
+export class OverviewComponent {}
 ```
 
 ## Route Guards
@@ -437,17 +440,20 @@ const adminGuard = authGuardDefinition('admin-access');
 const editorGuard = authGuardDefinition(['read', 'write']);
 
 // Guard with full AuthorizeOptions
-const advancedGuard = authGuardDefinition({
+const advancedGuard = authGuardDefinition(
+{
     permission: ['admin', 'moderator'],
     andCondition: false,
     addCondition: (injector) =>
     {
         const featureFlags = injector.get(FeatureFlagService);
+
         return featureFlags.isEnabled('admin-panel');
     },
 });
 
-const routes: Routes = [
+const routes: Routes = 
+[
     {path: 'admin', component: AdminComponent, canActivate: [adminGuard]},
     {path: 'editor', component: EditorComponent, canActivate: [editorGuard]},
 ];
@@ -475,7 +481,8 @@ Structural directive that conditionally renders its host template based on user 
 ```typescript
 import {AuthorizeDirective} from '@anglr/authentication';
 
-@Component({
+@Component(
+{
     imports: [AuthorizeDirective],
     ...
 })
@@ -519,11 +526,11 @@ export class MyComponent {}
     <li *authorize="'authenticated'">
         <a routerLink="/home">Home</a>
     </li>
-    <li *authorize="'ecakacky_cakacieListinyPrehladPage'">
-        <a routerLink="/cakacieListiny/prehlad">Waiting Lists</a>
+    <li *authorize="'waitingListsOverviewPage'">
+        <a routerLink="/waitingLists/overview">Waiting Lists</a>
     </li>
-    <li *authorize="'ecakacky_kontrolyPrehladPage'">
-        <a routerLink="/kontroly/prehlad">Controls</a>
+    <li *authorize="'controlsOverviewPage'">
+        <a routerLink="/controls/overview">Controls</a>
     </li>
     <li *authorize="'debugInfo'">
         <a routerLink="/debug">Debug Info</a>
@@ -552,14 +559,18 @@ Structural directive that always renders its template and exposes the authorizat
 <!-- The authorized boolean is available as implicit context -->
 <ng-container *letAuthorized="'edit'; let authorized">
     <button [disabled]="!authorized">Edit</button>
-    <span *ngIf="!authorized" class="text-muted">No edit permission</span>
+
+    @if(!authorized)
+    {
+        <span class="text-muted">No edit permission</span>
+    }
 </ng-container>
 ```
 
 **As attribute directive** (access via template reference):
 
 ```html
-<div letAuthorized="'delete'" #canDelete="authorized">
+<div letAuthorized="delete" #canDelete="authorized">
     <button [disabled]="!canDelete.value" (click)="delete()">Delete</button>
 </div>
 ```
@@ -586,7 +597,8 @@ Pure pipe for checking permissions in template expressions. Returns `boolean`.
 ```typescript
 import {HasPermissionPipe} from '@anglr/authentication';
 
-@Component({
+@Component(
+{
     imports: [HasPermissionPipe],
     ...
 })
@@ -595,9 +607,12 @@ export class MyComponent {}
 
 ```html
 <!-- Use in @if control flow -->
-@if ('edit-permission' | hasPermission) {
+@if ('edit-permission' | hasPermission) 
+{
     <input [(ngModel)]="value" />
-} @else {
+} 
+@else 
+{
     <span>{{value}}</span>
 }
 
@@ -607,14 +622,17 @@ export class MyComponent {}
 </button>
 
 <!-- AND condition: user must have both permissions -->
-<button [disabled]="!(['read', 'write'] | hasPermission:true)">
+<button [disabled]="!(['read', 'write'] | hasPermission: true)">
     Publish
 </button>
 
 <!-- Condition string with logical operators -->
-<div *ngIf="'admin || moderator' | hasPermission:false:true">
-    Management Section
-</div>
+@if('admin || moderator' | hasPermission: false: true)
+{
+    <div>
+        Management Section
+    </div>
+}
 
 <!-- Combine with other conditions -->
 <button [disabled]="!('ecakacky_kontrolyUpdateStav' | hasPermission) || isLoading"
@@ -641,25 +659,23 @@ Functional HTTP interceptor that handles `401 Unauthorized` and `403 Forbidden` 
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {authInterceptor} from '@anglr/authentication';
 
-export const appProviders = [
-    provideHttpClient(
-        withInterceptors([authInterceptor]),
-    ),
+export const appProviders = 
+[
+    provideHttpClient(withInterceptors([authInterceptor])),
 ];
 ```
 
 ### suppressAuthInterceptor
 
-Functional HTTP interceptor that silently suppresses `401/403` errors (completes the observable without emitting an error). Useful for requests where auth errors should be handled silently (e.g., optional data loading).
+Functional HTTP interceptor that silently suppresses `401/403` errors (completes the observable without emitting an error). Used for hiding auth errors from user/caller of called API.
 
 ```typescript
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {authInterceptor, suppressAuthInterceptor} from '@anglr/authentication';
 
-export const appProviders = [
-    provideHttpClient(
-        withInterceptors([authInterceptor, suppressAuthInterceptor]),
-    ),
+export const appProviders = 
+[
+    provideHttpClient(withInterceptors([authInterceptor, suppressAuthInterceptor])),
 ];
 ```
 
@@ -674,14 +690,13 @@ Configuration class for `authInterceptor`.
 ```typescript
 import {AuthInterceptorOptions} from '@anglr/authentication';
 
-export const appProviders = [
+export const appProviders = 
+[
     {
         provide: AuthInterceptorOptions,
         useValue: new AuthInterceptorOptions(true),
     },
-    provideHttpClient(
-        withInterceptors([authInterceptor]),
-    ),
+    provideHttpClient(withInterceptors([authInterceptor])),
 ];
 ```
 
@@ -692,8 +707,6 @@ export const appProviders = [
 Convenience function that checks permissions against the current user identity from `AuthenticationService`.
 
 ```typescript
-import {isAuthorized} from '@anglr/authentication';
-
 const hasAccess = isAuthorized(authService, 'admin');
 const hasAll = isAuthorized(authService, ['read', 'write'], true); // AND condition
 ```
@@ -703,8 +716,6 @@ const hasAll = isAuthorized(authService, ['read', 'write'], true); // AND condit
 Core permission evaluation function. Can be used independently of `AuthenticationService`.
 
 ```typescript
-import {evaluatePermissions} from '@anglr/authentication';
-
 const userPermissions = ['read', 'write', 'admin'];
 
 // OR condition (default) - has at least one
@@ -715,28 +726,6 @@ evaluatePermissions(userPermissions, ['admin', 'superadmin'], true); // false
 
 // Condition string - logical expression
 evaluatePermissions(userPermissions, 'admin && (read || delete)', false, true); // true
-```
-
-## Testing
-
-The library provides testing utilities to simplify unit testing of components that use authorization directives.
-
-### FakeAuthorizeDirective
-
-A fake `AuthorizeDirective` that always renders its template without checking permissions.
-
-```typescript
-import {FakeAuthorizeDirective, TestingModule} from '@anglr/authentication/testing';
-
-// Option 1: Import the module
-TestBed.configureTestingModule({
-    imports: [TestingModule, MyComponent],
-});
-
-// Option 2: Import the directive directly
-TestBed.configureTestingModule({
-    imports: [FakeAuthorizeDirective, MyComponent],
-});
 ```
 
 ## Complete Example
@@ -760,20 +749,28 @@ export const appProviders: Provider[] =
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withInterceptors([authInterceptor])),
 
-    <ClassProvider>{
+    <ClassProvider>
+    {
         provide: AuthenticationServiceOptions,
         useClass: AccountAuthOptions,
     },
 
-    <FactoryProvider>{
-        provide: APP_INITIALIZER,
-        multi: true,
-        useFactory: () =>
+    provideAppInitializer(async () =>
+    {
+        const authService = inject(AuthenticationService);
+
+        try
         {
-            const authService = inject(AuthenticationService);
-            return async () => await authService.getUserIdentity();
-        },
-    },
+            await authService
+                .getUserIdentity();
+        }
+        catch(e)
+        {
+            alert(`Authentication initialization failed: ${e}`);
+
+            throw e;
+        }
+    }),
 ];
 ```
 
@@ -784,10 +781,10 @@ export const appProviders: Provider[] =
 import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {Authorize, ComponentRouteAuthorized, AuthorizeDirective, HasPermissionPipe} from '@anglr/authentication';
 
-@Component({
+@Component(
+{
     selector: 'admin-view',
     templateUrl: 'admin.component.html',
-    standalone: true,
     imports: [AuthorizeDirective, HasPermissionPipe],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })

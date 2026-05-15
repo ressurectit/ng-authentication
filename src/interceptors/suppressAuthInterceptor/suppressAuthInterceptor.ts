@@ -11,12 +11,12 @@ import {catchError} from 'rxjs/operators';
  */
 export function suppressAuthInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>>
 {
-    return next(req).pipe(catchError((err) =>
+    return next(req).pipe(catchError(err =>
     {
         return new Observable(observer =>
         {
             //client error, not response from server, or is ignored
-            if (err.error instanceof Error || 
+            if (err.error instanceof Error ||
                 req.context.get(IGNORED_INTERCEPTORS).some(itm => itm == SuppressAuthInterceptor || itm == suppressAuthInterceptor))
             {
                 observer.error(err);
@@ -28,7 +28,7 @@ export function suppressAuthInterceptor(req: HttpRequest<unknown>, next: HttpHan
             //if auth error
             if(err.status == 403 || err.status == 401)
             {
-                observer.complete();    
+                observer.complete();
 
                 return;
             }

@@ -83,7 +83,7 @@ export class LetAuthorizedDirective implements OnInit, OnChanges, OnDestroy
     }
 
     //######################### public methods - implementation of OnInit #########################
-    
+
     /**
      * Initialize component
      */
@@ -102,7 +102,7 @@ export class LetAuthorizedDirective implements OnInit, OnChanges, OnDestroy
                 {
                     this._processAuthorization(userIdentity);
                     this._changeDetector.detectChanges();
-                }, 
+                },
                 error()
                 {
                 }
@@ -110,7 +110,7 @@ export class LetAuthorizedDirective implements OnInit, OnChanges, OnDestroy
     }
 
     //######################### public methods - implementation of OnChanges #########################
-    
+
     /**
      * Called when input value changes
      */
@@ -124,7 +124,7 @@ export class LetAuthorizedDirective implements OnInit, OnChanges, OnDestroy
     }
 
     //######################### public methods - implementation of OnDestroy #########################
-    
+
     /**
      * Called when component is destroyed
      */
